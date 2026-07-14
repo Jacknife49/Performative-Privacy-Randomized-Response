@@ -29,7 +29,7 @@ def main():
     plot_population_history_only(
         leave_rate=0.2, 
         join_rate=0.6, 
-        growth_model="total",
+        growth_model="original",
         output_filename=os.path.join(output_dir, "pop_history_q_less_than_r.pdf")
     )
 
@@ -37,7 +37,7 @@ def main():
     plot_population_history_only(
         leave_rate=0.6, 
         join_rate=0.2, 
-        growth_model="total",
+        growth_model="original",
         output_filename=os.path.join(output_dir, "pop_history_q_greater_than_r.pdf")
     )
 
@@ -45,7 +45,7 @@ def main():
     plot_population_history_only(
         leave_rate=0.4, 
         join_rate=0.4, 
-        growth_model="total",
+        growth_model="original",
         output_filename=os.path.join(output_dir, "pop_history_q_equals_r.pdf")
     )
 
