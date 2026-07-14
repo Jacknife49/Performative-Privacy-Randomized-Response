@@ -6,8 +6,8 @@ def simulate_final_step_experiment(
     epsilon,
     time_horizon_T,
     initial_participants_N,
-    join_prob_lam,
-    leave_prob_theta,
+    join_prob,
+    leave_prob,
     model_type="original",
     trials=10,
     nmax=20000,
@@ -30,13 +30,13 @@ def simulate_final_step_experiment(
 
             if model_type == "original":
                 unleaked_count = N - leaked_count
-                joining = rng.binomial(unleaked_count, join_prob_lam)
+                joining = rng.binomial(unleaked_count, join_prob)
             elif model_type == "agnostic":
-                joining = rng.binomial(N, join_prob_lam)
+                joining = rng.binomial(N, join_prob)
             else:
                 raise ValueError("model_type must be 'original' or 'agnostic'")
 
-            leaving = rng.binomial(leaked_count, leave_prob_theta)
+            leaving = rng.binomial(leaked_count, leave_prob)
             N = N + joining - leaving
             N = min(max(0, int(N)), nmax)
 
@@ -66,23 +66,23 @@ def generate_heatmap_for_model(model_type="original"):
     T = 200
     N_init = 400
     grid_size = 50 
-    lams = np.linspace(0.0, 1.0, grid_size)
-    thetas = np.linspace(0.0, 1.0, grid_size)
-    epsilons = np.logspace(-2, 0.7, 30) 
+    r_s = np.linspace(0.0, 1.0, grid_size)
+    q_s = np.linspace(0.0, 1.0, grid_size)
+    epsilons = np.geomspace(0.01, 20, 10) 
 
     print(f"Running simulation for the {model_type.capitalize()} Model ({grid_size}x{grid_size} grid)...")
-    best_eps_matrix = np.zeros((len(thetas), len(lams)))
+    best_eps_matrix = np.zeros((len(q_s), len(r_s)))
 
-    for i, theta in enumerate(thetas):
-        for j, lam in enumerate(lams):
+    for i, q in enumerate(q_s):
+        for j, r in enumerate(r_s):
             errors = []
             for eps in epsilons:
                 avg_error, _ = simulate_final_step_experiment(
                     epsilon=eps,
                     time_horizon_T=T,
                     initial_participants_N=N_init,
-                    join_prob_lam=lam,
-                    leave_prob_theta=theta,
+                    join_prob=r,
+                    leave_prob=q,
                     model_type=model_type,
                     trials=10, 
                     nmax=20000 
@@ -95,7 +95,7 @@ def generate_heatmap_for_model(model_type="original"):
     log_eps_matrix = np.log10(best_eps_matrix)
 
     mesh = plt.pcolormesh(
-        lams, thetas, log_eps_matrix, 
+        r_s, q_s, log_eps_matrix, 
         shading='auto', cmap='viridis', vmin=-2.0, vmax=0.7
     )
 
@@ -105,8 +105,8 @@ def generate_heatmap_for_model(model_type="original"):
 
     model_title = "Original Model" if model_type == "original" else "Agnostic Model"
     plt.title(f"{model_title} Optimal Epsilon Landscape", fontsize=18, pad=15)
-    plt.xlabel(r"$\lambda$ (Join Rate)", fontsize=16)
-    plt.ylabel(r"$\theta$ (Leave Rate)", fontsize=16)
+    plt.xlabel(r"$r$ (Join Rate)", fontsize=16)
+    plt.ylabel(r$q$ (Leave Rate)", fontsize=16)
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
