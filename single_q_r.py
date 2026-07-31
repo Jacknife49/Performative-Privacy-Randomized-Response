@@ -24,33 +24,36 @@ T = 50
 R = 10.0
 taus = [0.02]
 gammas = np.geomspace(0.2, 20.0, 30)
-q_values = np.linspace(0.01, 0.99, 30)
+q_values = np.linspace(0.01, 0.99, 10)
 r_values = np.linspace(0.01, 0.99, 30)
-trials = 20
+trials = 50
 
 # All paths are relative to this script, so the scripts work from any cwd.
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_RESULTS_DIR = SCRIPT_DIR / "results"
 
 
-def resolve_grid_value(name, requested, grid):
-    """Return the canonical value and index for one configured grid coordinate."""
-    matches = np.flatnonzero(np.isclose(grid, requested, rtol=0.0, atol=5e-9))
-    if len(matches) != 1:
-        values = ", ".join(f"{value:.8f}" for value in grid)
-        raise ValueError(
-            f"{name}={requested} is not on the configured {name} grid. "
-            f"Choose one of: {values}"
-        )
-    index = int(matches[0])
-    return float(grid[index]), index
+def optional_grid_index(value, grid):
+    """Return the grid index when value is on the grid, otherwise None."""
+    matches = np.flatnonzero(np.isclose(grid, value, rtol=0.0, atol=5e-9))
+    return int(matches[0]) if len(matches) == 1 else None
 
 
-def run_for_pair(q, q_index, r, r_index):
+def float_seed_words(value):
+    """Represent a float exactly as two integers suitable for SeedSequence."""
+    bits = int(np.float64(value).view(np.uint64))
+    return [bits & 0xFFFFFFFF, bits >> 32]
+
+
+def run_for_pair(q, r):
+    q = float(q)
+    r = float(r)
+    q_index = optional_grid_index(q, q_values)
+    r_index = optional_grid_index(r, r_values)
+
     # A pair-specific stream is deterministic regardless of parallel launch order.
-    rng = np.random.default_rng(
-        np.random.SeedSequence([BASE_SEED, q_index, r_index])
-    )
+    seed_words = [BASE_SEED, *float_seed_words(q), *float_seed_words(r)]
+    rng = np.random.default_rng(np.random.SeedSequence(seed_words))
     results_by_tau = {}
 
     for tau in taus:
@@ -180,8 +183,8 @@ def save_atomically(result, destination):
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--q", type=float, required=True, help="q value from q_values")
-    parser.add_argument("--r", type=float, required=True, help="r value from r_values")
+    parser.add_argument("--q", type=float, required=True, help="q value")
+    parser.add_argument("--r", type=float, required=True, help="r value")
     parser.add_argument(
         "--results-dir",
         type=Path,
@@ -193,10 +196,10 @@ def parse_args():
 
 def main():
     args = parse_args()
-    q, q_index = resolve_grid_value("q", args.q, q_values)
-    r, r_index = resolve_grid_value("r", args.r, r_values)
+    q = float(args.q)
+    r = float(args.r)
     started_at = time.perf_counter()
-    result = run_for_pair(q, q_index, r, r_index)
+    result = run_for_pair(q, r)
     destination = (
         args.results_dir.resolve() / f"result_q_{q:.8f}_r_{r:.8f}.pkl"
     )
