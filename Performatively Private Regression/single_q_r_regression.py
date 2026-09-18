@@ -24,9 +24,9 @@ N0 = 1000
 T = 50
 R = 5.0
 tau = 0.02
-gammas = np.geomspace(0.2, 20.0, 3)
-q_values = np.linspace(0.1, 1.0, 3)
-r_values = np.linspace(0.1, 1.0, 3)
+gammas = np.geomspace(0.2, 20.0, 30)
+q_values = np.linspace(0.01, 0.99, 30)
+r_values = np.linspace(0.01, 0.99, 30)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 DEFAULT_RESULTS_DIR = SCRIPT_DIR / "results_regression"
