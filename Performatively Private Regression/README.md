@@ -6,7 +6,7 @@ This repository contains scripts for running individual regression experiments, 
 
 ### 1. Run a Single Regression
 Run an individual regression experiment:
-`python single_q_r_regression.py`
+`python single_q_r_regression.py --q 0.5 --r 0.5`
 
 ### 2. Launch Grid Search
 Launch the full grid search across multiple workers:
