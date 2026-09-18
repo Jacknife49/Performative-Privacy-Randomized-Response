@@ -18,8 +18,8 @@ RUNNER = SCRIPT_DIR / "single_q_r_regression.py"
 DEFAULT_RESULTS_DIR = SCRIPT_DIR / "results_regression"
 
 # Match the regression grid bounds (0.1 to 1.0)
-q_values = np.linspace(0.1, 1.0, 3)
-r_values = np.linspace(0.1, 1.0, 3)
+q_values = np.linspace(0.01, 0.99, 30)
+r_values = np.linspace(0.01, 0.99, 30)
 
 def run_one(q, r, results_dir, force):
     result_file = results_dir / f"result_q_{q:.8f}_r_{r:.8f}.pkl"
