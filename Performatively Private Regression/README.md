@@ -37,6 +37,6 @@ Based on the current configuration in `single_q_r_regression.py`, the following 
 *   **Clipping Bound (`R`):** 5.0
 *   **Vulnerability Threshold (`tau`):** 0.02
 *   **Base Seed:** 42
-*   **Search Grids:** 3 values for `gamma` (0.2 to 20.0), `q`, and `r` (0.1 to 1.0)
+*   **Search Grids:** 30 values for `gamma` (0.2 to 20.0), `q`, and `r` (0.01 to 0.99)
 
 *Note: Please note that this is currently a trial run. As such, the chosen parameters and hyperparameters listed above are fixed directly in the script for now. Because this is an initial test phase, we are not allowing the explicit tuning of things like the learning rate or batch size via command line arguments. If this experiment is successful, we shall incorporate those changes to allow for dynamic tuning in future updates.*
