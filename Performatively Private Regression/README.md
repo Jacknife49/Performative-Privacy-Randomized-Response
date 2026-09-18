@@ -13,5 +13,5 @@ Launch the full grid search across multiple workers:
 `python launch_all_grid_regression.py --workers 4`
 
 ### 3. Plot Results
-Generate a performance/privacy heatmap from your completed grid search:
+Generate a performance/privacy heatmap from the completed grid search:
 `python perf_priv_reg_heatmap.py --results-dir /path/to/your/custom_folder` (The default folder in which the .pkl files are saved is /results_regression/ as output from 2.)
