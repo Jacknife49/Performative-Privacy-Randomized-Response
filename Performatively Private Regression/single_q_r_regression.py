@@ -5,17 +5,12 @@ linear model y = x^T beta_true + eps. The released statistic each round is a
 DP-OLS fit obtained by Gaussian output perturbation of the ordinary least
 squares estimator beta_hat = (X^T X)^{-1} X^T y. The leave-one-out
 counterfactual beta_hat^{-i} used in the log-likelihood-ratio test is the
-closed-form OLS deletion update (Sherman-Morrison / leverage formula), which
-reduces exactly to the original mean-estimation leave-one-out formula when X
-is a column of ones.
+closed-form OLS deletion update.
 
 Model quality is measured by held-out test loss (mean squared prediction
-error of the released noisy model o_t on a fresh test set) rather than
-distance to beta_true. If the population collapses to the point where OLS
-can no longer be fit (Nt <= d), every remaining round in that trajectory is
-charged a fixed penalty loss instead of being dropped from the average, so
-gamma settings that let the population crash are not rewarded for simply
-running out of rounds.
+error of the released noisy model o_t on a fresh test set). If the population
+collapses to the point where OLS can no longer be fit (Nt <= d), every
+remaining round is charged a fixed penalty loss.
 
 Example:
     python single_q_r.py --q 0.01 --r 0.01
@@ -34,7 +29,6 @@ import numpy as np
 # Base parameters (kept identical in spirit to the original experiment).
 BASE_SEED = 42
 d = 12                      # dimension of beta_true / covariates x_i
-beta_true = np.ones(d)     # true regression coefficient vector
 Sigma_x = np.eye(d)         # covariance of the covariates x_i
 sigma_eps = 1.0             # std dev of the regression noise eps_i
 N0 = 1000
@@ -105,6 +99,10 @@ def run_for_pair(q, r):
                     if Nt <= d:
                         Nt_history_all_gammas[gamma][trial, t + 1 :] = Nt
                         break
+
+                    # Draw a fresh beta_true from the surface of the d-dimensional unit ball
+                    raw_beta = rng.normal(0, 1, size=d)
+                    beta_true = raw_beta / np.linalg.norm(raw_beta)
 
                     X = rng.multivariate_normal(np.zeros(d), Sigma_x, Nt)
                     norms = np.linalg.norm(X, axis=1)
