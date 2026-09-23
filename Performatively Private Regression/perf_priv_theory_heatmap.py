@@ -59,7 +59,7 @@ num_generated = 0
 batches = max(1, NUM_SAMPLES // N)
 
 # True underlying parameter explicitly set to zeros matching empirical
-theta_star = np.zeros(d)
+theta_star = np.eye(d)
 
 print(f"Generating {NUM_SAMPLES:,} Monte Carlo samples for the OLS effective signals...")
 
