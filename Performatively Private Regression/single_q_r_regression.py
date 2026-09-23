@@ -46,7 +46,7 @@ q_values = np.linspace(0.01, 0.99, 30)
 r_values = np.linspace(0.01, 0.99, 30)
 trials = 5
 
-RIDGE_EPS = 1e-2             # tiny ridge for numerical stability of (X^T X)^{-1}
+RIDGE_EPS = 1e-5             # tiny ridge for numerical stability of (X^T X)^{-1}
 LEVERAGE_DENOM_FLOOR = 1e-9  # guards the (1 - h_i) leave-one-out denominator
 
 N_TEST = 2000                    # size of the fresh held-out test set drawn each round
@@ -114,7 +114,7 @@ def run_for_pair(q, r):
                     eps = rng.normal(0, sigma_eps, size=Nt)
                     y = X_bar @ beta_true + eps
 
-                    XtX = X_bar.T @ X_bar + RIDGE_EPS * np.eye(d)
+                    XtX = X_bar.T @ X_bar + Nt * RIDGE_EPS * np.eye(d)
                     XtX_inv = np.linalg.inv(XtX)
                     beta_hat = XtX_inv @ (X_bar.T @ y)
 
