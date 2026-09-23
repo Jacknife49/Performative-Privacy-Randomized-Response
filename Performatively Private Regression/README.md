@@ -17,7 +17,7 @@ Generate a performance/privacy heatmap from the completed grid search:
 `python perf_priv_reg_heatmap.py --results-dir /path/to/your/custom_folder` (The default folder in which the .pkl files are saved is /results_regression/ as output from 2)
 
 ### 4. Theoretical Heatmap
-Launch perf_priv_theory_heatmap.py
+Launch `python perf_priv_theory_heatmap.py`
 
 ### 5. Comparison of Theoretical and Empirical Results
-Launch perf_priv_reg_comparison.py
+Launch `python perf_priv_reg_comparison.py`
