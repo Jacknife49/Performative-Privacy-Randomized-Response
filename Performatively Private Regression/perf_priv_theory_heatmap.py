@@ -143,7 +143,7 @@ def cumulative_error(gamma, q, r):
 
 
 # ============================================================
-# Grid Search Optimization
+# Grid Search Optimization & Text Output
 # ============================================================
 GRID_RESOLUTION = 30
 
@@ -155,20 +155,28 @@ optimal_gammas = np.zeros((GRID_RESOLUTION, GRID_RESOLUTION))
 
 print(f"Running numerical optimization over {GRID_RESOLUTION}x{GRID_RESOLUTION} grid...")
 
-for i, q in enumerate(q_values):
-    for j, r in enumerate(r_values):
-        
-        # Optimize gamma explicitly bounded to the empirical geomspace bounds (0.2, 20.0)
-        result = minimize_scalar(
-            cumulative_error,
-            bounds=(0.2, 20.0), 
-            args=(q, r),
-            method="bounded"
-        )
+txt_filename = "optimal_gammas_theory.txt"
 
-        optimal_gammas[i, j] = result.x
-        print(f"Optimal gamma for (q, r) = ({q:.2f}, {r:.2f}): {result.x:.4f}")
+with open(txt_filename, 'w') as f_out:
+    for i, q in enumerate(q_values):
+        for j, r in enumerate(r_values):
+            
+            # Optimize gamma explicitly bounded to the empirical geomspace bounds (0.2, 20.0)
+            result = minimize_scalar(
+                cumulative_error,
+                bounds=(0.2, 20.0), 
+                args=(q, r),
+                method="bounded"
+            )
 
+            optimal_gammas[i, j] = result.x
+            
+            # Format and save exactly as requested
+            output_line = f"Optimal gamma for (q, r) = ({q:.2f}, {r:.2f}): {result.x:.4f}"
+            print(output_line)
+            f_out.write(output_line + "\n")
+
+print(f"\nOptimization complete. Summary saved as '{txt_filename}'.")
 
 # ============================================================
 # Plot Heatmap
@@ -210,4 +218,4 @@ plt.tight_layout()
 plt.savefig("optimal_gamma_heatmap_ols.png", dpi=300, bbox_inches="tight")
 plt.show()
 
-print("Optimization complete. Heatmap saved as 'optimal_gamma_heatmap_ols_matched.png'.")
+print("Heatmap saved as 'optimal_gamma_heatmap_ols.png'.")
