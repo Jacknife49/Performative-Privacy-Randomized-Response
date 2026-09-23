@@ -46,7 +46,7 @@ q_values = np.linspace(0.01, 0.99, 30)
 r_values = np.linspace(0.01, 0.99, 30)
 trials = 5
 
-RIDGE_EPS = 1e-8             # tiny ridge for numerical stability of (X^T X)^{-1}
+RIDGE_EPS = 1e-2             # tiny ridge for numerical stability of (X^T X)^{-1}
 LEVERAGE_DENOM_FLOOR = 1e-9  # guards the (1 - h_i) leave-one-out denominator
 
 N_TEST = 2000                    # size of the fresh held-out test set drawn each round
