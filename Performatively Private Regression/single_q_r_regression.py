@@ -34,7 +34,7 @@ import numpy as np
 # Base parameters (kept identical in spirit to the original experiment).
 BASE_SEED = 42
 d = 12                      # dimension of beta_true / covariates x_i
-beta_true = np.zeros(d)     # true regression coefficient vector
+beta_true = np.eye(d)     # true regression coefficient vector
 Sigma_x = np.eye(d)         # covariance of the covariates x_i
 sigma_eps = 1.0             # std dev of the regression noise eps_i
 N0 = 1000
